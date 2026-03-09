@@ -27,12 +27,12 @@ Module.register("MMM-MySystem", {
   loadTranslations: function(lang) {
     const self = this;
     fetch(`${this.file("/translations/")}${lang}.json`)
-      .then((resp) => resp.json())
-      .then((json) => {
+      .then(resp => resp.json())
+      .then(json => {
         self.translations = json;
         self.updateDom();
       })
-      .catch((err) => console.error("MMM-MySystem translation load error:", err));
+      .catch(err => console.error("MMM-MySystem translation load error:", err));
   },
 
   translate: function(key) {
@@ -55,36 +55,53 @@ Module.register("MMM-MySystem", {
       { show: this.config.showMemory, key: "memory", icon: "💾", label: "Memory" },
       { show: this.config.showUptime, key: "uptime", icon: "⏱️", label: "Uptime" },
       { show: this.config.showDisk, key: "disk", icon: "🗄️", label: "Disk" },
-      { show: this.config.showVolume, key: "volume", icon: "🔊", label: "Volume" },
+      { show: this.config.showVolume, key: "volume", icon: "🔊", label: "Volume" }
     ];
 
-    items.forEach((item) => {
+    items.forEach(item => {
       if (item.show && this.systemData[item.key]) {
-        const div = document.createElement("div");
-        div.innerHTML = `${item.icon} <strong>${this.translate(item.label)}:</strong> ${this.systemData[item.key]}`;
-        wrapper.appendChild(div);
+        const row = document.createElement("div");
+        row.className = "system-row";
+
+        const left = document.createElement("div");
+        left.className = "system-left";
+        left.innerHTML = `${item.icon} ${this.translate(item.label)}`;
+
+        const right = document.createElement("div");
+        right.className = "system-right";
+        right.innerHTML = this.systemData[item.key];
+
+        row.appendChild(left);
+        row.appendChild(right);
+        wrapper.appendChild(row);
       }
     });
 
     // ETH/WIFI IP
     if (this.config.showIP && this.systemData.ip) {
-      const wrapperIP = document.createElement("div");
-      wrapperIP.className = "system-ip";
-
       const lines = this.systemData.ip.split(" ");
-      lines.forEach((part) => {
-        const lineDiv = document.createElement("div");
-        if (part.startsWith("ETH:")) {
-          lineDiv.innerHTML = `🌐 <strong>${this.translate("ETH")}:</strong> ${part.replace("ETH:", "").trim()}`;
-        } else if (part.startsWith("WIFI:")) {
-          lineDiv.innerHTML = `📶 <strong>${this.translate("WIFI")}:</strong> ${part.replace("WIFI:", "").trim()}`;
-        } else {
-          lineDiv.innerHTML = part;
-        }
-        wrapperIP.appendChild(lineDiv);
-      });
+      lines.forEach(part => {
+        const row = document.createElement("div");
+        row.className = "system-row";
 
-      wrapper.appendChild(wrapperIP);
+        const left = document.createElement("div");
+        left.className = "system-left";
+
+        const right = document.createElement("div");
+        right.className = "system-right";
+
+        if (part.startsWith("ETH:")) {
+          left.innerHTML = `🌐 ${this.translate("ETH")}`;
+          right.innerHTML = part.replace("ETH:", "").trim();
+        } else if (part.startsWith("WIFI:")) {
+          left.innerHTML = `📶 ${this.translate("WIFI")}`;
+          right.innerHTML = part.replace("WIFI:", "").trim();
+        }
+
+        row.appendChild(left);
+        row.appendChild(right);
+        wrapper.appendChild(row);
+      });
     }
 
     return wrapper;
@@ -92,5 +109,5 @@ Module.register("MMM-MySystem", {
 
   getStyles: function() {
     return ["MMM-MySystem.css"];
-  },
+  }
 });
