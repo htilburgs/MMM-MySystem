@@ -1,0 +1,8 @@
+{
+  "name": "MMM-MySystem",
+  "version": "1.0.0",
+  "description": "MagicMirror module to show system information with icons and translations",
+  "main": "MMM-MySystem.js",
+  "scripts": {},
+  "dependencies": {}
+}
