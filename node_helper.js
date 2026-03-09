@@ -64,7 +64,7 @@ module.exports = NodeHelper.create({
 
     // Disk – only free space of root partition
     if (this.config.showDisk) {
-      let diskCmd = "df -h / | awk 'NR==2 {print $4}'";
+      let diskCmd = "df -h / | awk 'NR==2 {print $4 \" (\" $5 \")\"}'";
       diskCmd = cmd("disk", diskCmd);
       commands.push(execCmd(diskCmd).then(res => {
         if (res) data.disk = res;
