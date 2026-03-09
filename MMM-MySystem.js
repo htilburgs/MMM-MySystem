@@ -58,6 +58,7 @@ Module.register("MMM-MySystem", {
       { show: this.config.showVolume, key: "volume", icon: "🔊", label: "Volume" }
     ];
 
+    // Display main system metrics
     items.forEach(item => {
       if (item.show && this.systemData[item.key]) {
         const row = document.createElement("div");
@@ -77,31 +78,41 @@ Module.register("MMM-MySystem", {
       }
     });
 
-    // ETH/WIFI IP
-    if (this.config.showIP && this.systemData.ip) {
-      const lines = this.systemData.ip.split(" ");
-      lines.forEach(part => {
-        const row = document.createElement("div");
-        row.className = "system-row";
+    // Display ETH/WiFi IP separately, one row each
+    if (this.config.showIP) {
+      if (this.systemData.ethIP) {
+        const ethRow = document.createElement("div");
+        ethRow.className = "system-row";
 
         const left = document.createElement("div");
         left.className = "system-left";
+        left.innerHTML = `🌐 ${this.translate("ETH")}`;
 
         const right = document.createElement("div");
         right.className = "system-right";
+        right.innerHTML = this.systemData.ethIP;
 
-        if (part.startsWith("ETH:")) {
-          left.innerHTML = `🌐 ${this.translate("ETH")}`;
-          right.innerHTML = part.replace("ETH:", "").trim();
-        } else if (part.startsWith("WIFI:")) {
-          left.innerHTML = `📶 ${this.translate("WIFI")}`;
-          right.innerHTML = part.replace("WIFI:", "").trim();
-        }
+        ethRow.appendChild(left);
+        ethRow.appendChild(right);
+        wrapper.appendChild(ethRow);
+      }
 
-        row.appendChild(left);
-        row.appendChild(right);
-        wrapper.appendChild(row);
-      });
+      if (this.systemData.wifiIP) {
+        const wifiRow = document.createElement("div");
+        wifiRow.className = "system-row";
+
+        const left = document.createElement("div");
+        left.className = "system-left";
+        left.innerHTML = `📶 ${this.translate("WIFI")}`;
+
+        const right = document.createElement("div");
+        right.className = "system-right";
+        right.innerHTML = this.systemData.wifiIP;
+
+        wifiRow.appendChild(left);
+        wifiRow.appendChild(right);
+        wrapper.appendChild(wifiRow);
+      }
     }
 
     return wrapper;
