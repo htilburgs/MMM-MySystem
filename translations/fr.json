@@ -1,0 +1,10 @@
+{
+  "CPU": "Température CPU",
+  "Memory": "Mémoire Libre",
+  "Uptime": "Temps de fonctionnement",
+  "Disk": "Espace Libre",
+  "Volume": "Volume",
+  "IP": "Adresse IP",
+  "ETH": "Ethernet",
+  "WIFI": "WiFi"
+}
