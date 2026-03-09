@@ -7,12 +7,13 @@ module.exports = NodeHelper.create({
     console.log("MMM-MySystem helper started...");
     this.config = {};
 
+    // Auto-detect OS version if not manually set
     const self = this;
     fs.readFile("/etc/os-release", "utf8", (err, data) => {
       if (!err && data && !self.config.osVersion) {
         if (data.includes("bookworm")) self.config.osVersion = "Bookworm";
         else if (data.includes("trixie")) self.config.osVersion = "Trixie";
-        else self.config.osVersion = "Trixie";
+        else self.config.osVersion = "Trixie"; // fallback
       }
     });
   },
@@ -32,13 +33,14 @@ module.exports = NodeHelper.create({
 
     const commands = [];
 
-    // CPU
+    // CPU Temperature
     if (this.config.showCPU) {
-      let cpuCmd = this.config.osVersion === "Trixie"
-        ? "cat /sys/class/thermal/thermal_zone0/temp"
-        : "sensors | grep 'Package id 0:' | awk '{print $4}'";
+      let cpuCmd =
+        this.config.osVersion === "Trixie"
+          ? "cat /sys/class/thermal/thermal_zone0/temp"
+          : "sensors | grep 'Package id 0:' | awk '{print $4}'";
       cpuCmd = cmd("cpu", cpuCmd);
-      commands.push(execCmd(cpuCmd).then(res => {
+      commands.push(execCmd(cpuCmd).then((res) => {
         if (res) {
           let temp = parseFloat(res) / (res > 1000 ? 1000 : 1);
           if (self.config.tempUnit === "F") temp = temp * 9 / 5 + 32;
@@ -51,45 +53,57 @@ module.exports = NodeHelper.create({
     if (this.config.showMemory) {
       let memCmd = "free | awk '/^Mem/ {printf \"%.0f\", $7/$2*100}'";
       memCmd = cmd("memory", memCmd);
-      commands.push(execCmd(memCmd).then(res => { if (res) data.memory = res + "%"; }));
+      commands.push(execCmd(memCmd).then((res) => { if (res) data.memory = res + "%"; }));
     }
 
     // Uptime
     if (this.config.showUptime) {
       let uptimeCmd = "uptime -p";
       uptimeCmd = cmd("uptime", uptimeCmd);
-      commands.push(execCmd(uptimeCmd).then(res => { if (res) data.uptime = res; }));
+      commands.push(execCmd(uptimeCmd).then((res) => { if (res) data.uptime = res; }));
     }
 
     // Disk
     if (this.config.showDisk) {
       let diskCmd = "df -h / | awk 'NR==2 {print $4}'";
       diskCmd = cmd("disk", diskCmd);
-      commands.push(execCmd(diskCmd).then(res => { if (res) data.disk = res; }));
+      commands.push(execCmd(diskCmd).then((res) => { if (res) data.disk = res; }));
     }
 
     // Volume
     if (this.config.showVolume) {
       let volCmd = "amixer get Master | grep -o '[0-9]*%' | head -1";
       volCmd = cmd("volume", volCmd);
-      commands.push(execCmd(volCmd).then(res => { if (res) data.volume = res; }));
+      commands.push(execCmd(volCmd).then((res) => { if (res) data.volume = res; }));
     }
 
-    // IP ETH/WIFI
+    // IP Address (ETH/WiFi)
     if (this.config.showIP) {
-      let ipCmd = "ip -4 addr show eth0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' && ip -4 addr show wlan0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'";
-      ipCmd = cmd("ip", ipCmd);
-      commands.push(execCmd(ipCmd).then(res => {
-        if (res) {
-          const lines = res.split("\n");
-          let ipStr = "";
-          if (lines[0]) ipStr += `ETH: ${lines[0]} `;
-          if (lines[1]) ipStr += `WIFI: ${lines[1]}`;
-          data.ip = ipStr.trim() || "N/A";
-        }
+      const getIP = (iface) =>
+        `ip -4 addr show ${iface} 2>/dev/null | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' || echo ""`;
+
+      const ethCmd = cmd("ip_eth", getIP("eth0"));
+      const wifiCmd = cmd("ip_wifi", getIP("wlan0"));
+
+      commands.push(execCmd(ethCmd).then((res) => {
+        data.ethIP = res ? res.trim() : "N/A";
+      }));
+
+      commands.push(execCmd(wifiCmd).then((res) => {
+        data.wifiIP = res ? res.trim() : "N/A";
       }));
     }
 
-    Promise.all(commands).then(() => self.sendSocketNotification("SYSTEM_DATA", data));
+    // Execute all commands in parallel
+    Promise.all(commands).then(() => {
+      // Combine IPs for frontend
+      if (this.config.showIP) {
+        let ipStr = "";
+        if (data.ethIP) ipStr += `ETH: ${data.ethIP} `;
+        if (data.wifiIP) ipStr += `WIFI: ${data.wifiIP}`;
+        data.ip = ipStr.trim();
+      }
+      self.sendSocketNotification("SYSTEM_DATA", data);
+    });
   }
 });
