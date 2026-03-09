@@ -6,7 +6,7 @@ Module.register("MMM-MySystem", {
     showDisk: true,
     showVolume: true,
     showIP: true,
-    osVersion: null, // auto-detect if null
+    osVersion: null, // auto-detect
     tempUnit: "C",
     customCommands: {},
     updateInterval: 10000,
@@ -51,14 +51,12 @@ Module.register("MMM-MySystem", {
     wrapper.className = "mySystem";
 
     const items = [
-      { show: this.config.showCPU, key: "cpu", icon: "🖥️", label: "CPU" },
-      { show: this.config.showMemory, key: "memory", icon: "💾", label: "Memory" },
+      { show: this.config.showCPU, key: "cpu", icon: "💻", label: "CPU" },
+      { show: this.config.showMemory, key: "memory", icon: "🧠", label: "Memory" },
       { show: this.config.showUptime, key: "uptime", icon: "⏱️", label: "Uptime" },
-      { show: this.config.showDisk, key: "disk", icon: "🗄️", label: "Disk" },
-      { show: this.config.showVolume, key: "volume", icon: "🔊", label: "Volume" }
+      { show: this.config.showDisk, key: "disk", icon: "💽", label: "Disk" }
     ];
 
-    // Display main system metrics
     items.forEach(item => {
       if (item.show && this.systemData[item.key]) {
         const row = document.createElement("div");
@@ -78,20 +76,17 @@ Module.register("MMM-MySystem", {
       }
     });
 
-    // Display ETH/WiFi IP separately, one row each
+    // ETH/WiFi IP
     if (this.config.showIP) {
       if (this.systemData.ethIP) {
         const ethRow = document.createElement("div");
         ethRow.className = "system-row";
-
         const left = document.createElement("div");
         left.className = "system-left";
         left.innerHTML = `🌐 ${this.translate("ETH")}`;
-
         const right = document.createElement("div");
         right.className = "system-right";
         right.innerHTML = this.systemData.ethIP;
-
         ethRow.appendChild(left);
         ethRow.appendChild(right);
         wrapper.appendChild(ethRow);
@@ -100,15 +95,12 @@ Module.register("MMM-MySystem", {
       if (this.systemData.wifiIP) {
         const wifiRow = document.createElement("div");
         wifiRow.className = "system-row";
-
         const left = document.createElement("div");
         left.className = "system-left";
         left.innerHTML = `📶 ${this.translate("WIFI")}`;
-
         const right = document.createElement("div");
         right.className = "system-right";
         right.innerHTML = this.systemData.wifiIP;
-
         wifiRow.appendChild(left);
         wifiRow.appendChild(right);
         wrapper.appendChild(wifiRow);
