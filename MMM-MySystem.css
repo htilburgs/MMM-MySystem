@@ -4,20 +4,31 @@
   color: #f0f0f0;
 }
 
-.mySystem div {
+.system-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
 }
 
-.mySystem div strong {
-  margin-left: 5px;
-  margin-right: 5px;
+.system-left {
+  flex: 1;
+  text-align: left;
+  font-weight: bold;
 }
 
-.system-ip div {
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
-  margin-bottom: 3px;
+.system-right {
+  flex: 1;
+  text-align: right;
+}
+
+/* Responsive: stack columns on small screens */
+@media (max-width: 400px) {
+  .system-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .system-right {
+    text-align: left;
+  }
 }
