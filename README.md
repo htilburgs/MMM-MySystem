@@ -1,5 +1,13 @@
 # MMM-MySystem
 
+## Installation
+```
+cd ~/MagicMirror/modules
+git clone https://github.com/htilburgs/MMM-MySystem.git
+cd MMM-MySystem
+npm install
+```
+
 ## Configuration
 ```
 {
