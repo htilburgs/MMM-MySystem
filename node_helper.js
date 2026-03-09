@@ -7,7 +7,7 @@ module.exports = NodeHelper.create({
     console.log("MMM-MySystem helper started...");
     this.config = {};
 
-    // Auto-detect OS version if not manually set
+    // Auto-detect OS version
     const self = this;
     fs.readFile("/etc/os-release", "utf8", (err, data) => {
       if (!err && data && !self.config.osVersion) {
@@ -63,18 +63,23 @@ module.exports = NodeHelper.create({
       commands.push(execCmd(uptimeCmd).then((res) => { if (res) data.uptime = res; }));
     }
 
-    // Disk
+    // Disk Volumes
     if (this.config.showDisk) {
-      let diskCmd = "df -h / | awk 'NR==2 {print $4}'";
+      let diskCmd = "df -h --output=source,avail,pcent,target -x tmpfs -x devtmpfs | tail -n +2";
       diskCmd = cmd("disk", diskCmd);
-      commands.push(execCmd(diskCmd).then((res) => { if (res) data.disk = res; }));
-    }
-
-    // Volume
-    if (this.config.showVolume) {
-      let volCmd = "amixer get Master | grep -o '[0-9]*%' | head -1";
-      volCmd = cmd("volume", volCmd);
-      commands.push(execCmd(volCmd).then((res) => { if (res) data.volume = res; }));
+      commands.push(execCmd(diskCmd).then((res) => {
+        if (res) {
+          const lines = res.split("\n");
+          const formatted = lines.map(line => {
+            const parts = line.trim().split(/\s+/);
+            if (parts.length >= 4) return `${parts[0]} (${parts[3]}): ${parts[1]} (${parts[2]})`;
+            return line;
+          });
+          data.disk = formatted.join(", ");
+        } else {
+          data.disk = "N/A";
+        }
+      }));
     }
 
     // IP Address (ETH/WiFi)
@@ -85,18 +90,12 @@ module.exports = NodeHelper.create({
       const ethCmd = cmd("ip_eth", getIP("eth0"));
       const wifiCmd = cmd("ip_wifi", getIP("wlan0"));
 
-      commands.push(execCmd(ethCmd).then((res) => {
-        data.ethIP = res ? res.trim() : "N/A";
-      }));
-
-      commands.push(execCmd(wifiCmd).then((res) => {
-        data.wifiIP = res ? res.trim() : "N/A";
-      }));
+      commands.push(execCmd(ethCmd).then((res) => { data.ethIP = res ? res.trim() : "N/A"; }));
+      commands.push(execCmd(wifiCmd).then((res) => { data.wifiIP = res ? res.trim() : "N/A"; }));
     }
 
     // Execute all commands in parallel
     Promise.all(commands).then(() => {
-      // Combine IPs for frontend
       if (this.config.showIP) {
         let ipStr = "";
         if (data.ethIP) ipStr += `ETH: ${data.ethIP} `;
