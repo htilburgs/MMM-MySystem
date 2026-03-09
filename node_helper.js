@@ -68,12 +68,16 @@ module.exports = NodeHelper.create({
       );
     }
 
-    // Free Memory
-    if (this.config.showMemory) {
-      let memCmd = "free -h | awk '/^Mem/ {print $4}'";
-      memCmd = cmd("memory", memCmd);
-      commands.push(execCmd(memCmd).then((res) => { if (res) data.memory = res; }));
-    }
+ 
+  // Free Memory in %
+  if (this.config.showMemory) {
+    // Command returns available and total memory in kB, then calculates percentage
+    let memCmd = "free | awk '/^Mem/ {printf \"%.0f\", $7/$2*100}'";
+    memCmd = cmd("memory", memCmd);
+    commands.push(execCmd(memCmd).then((res) => {
+    if (res) data.memory = res + "%";
+  }));
+}
 
     // Uptime
     if (this.config.showUptime) {
