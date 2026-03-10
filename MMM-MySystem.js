@@ -27,7 +27,8 @@ Module.register("MMM-MySystem", {
       de: "translations/de.json",
       fr: "translations/fr.json"
     };
-    
+  },
+
   start: function () {
     this.systemData = {};
     this.sendSocketNotification("CONFIG", this.config);
@@ -141,7 +142,6 @@ Module.register("MMM-MySystem", {
     }
 
     return wrapper;
-  },
   }
 
 });
