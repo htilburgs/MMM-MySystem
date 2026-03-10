@@ -50,8 +50,7 @@ module.exports = NodeHelper.create({
       }
 
       // CPU usage
-      // let cpuUsage = await this.execCmd("top -bn1 | grep 'Cpu(s)' | awk '{print 100-$8}'");
-      let cpuUsage = await this.execCmd("awk '/^%Cpu/{gsub(/,/, ".", $8); print 100 - $8}' <(top -b -n 1)");
+      let cpuUsage = await this.execCmd("top -bn1 | grep 'Cpu(s)' | awk '{print 100-$8}'");
       if (cpuUsage) data.cpuUsage = parseFloat(cpuUsage).toFixed(1) + "%";
 
       // Memory %
