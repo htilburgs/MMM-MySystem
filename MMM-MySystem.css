@@ -25,10 +25,14 @@
 .system-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   font-size: 16px;
   color: #ffffff;
+}
+.system-header:first-child {
+  font-size: 18px; /* slightly larger for hostname */
 }
 
 /* CPU Temp colors */
