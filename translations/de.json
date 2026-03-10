@@ -3,8 +3,7 @@
   "Memory": "Freier Speicher",
   "Uptime": "Betriebszeit",
   "Disk": "Freier Speicherplatz",
-  "Volume": "Lautstärke",
-  "IP": "IP-Adresse",
   "ETH": "Ethernet",
-  "WIFI": "WLAN"
+  "WIFI": "WLAN",
+  "GATHERING_INFO": "Information wird gesammelt......."
 }
