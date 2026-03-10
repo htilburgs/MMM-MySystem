@@ -33,7 +33,6 @@ npm install
     showIPwifi: true,
     tempUnit: "C"
     updateInterval: 10000,
-    language: "en",
     customCommands: {}
   }
 }
