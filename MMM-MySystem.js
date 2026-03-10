@@ -1,7 +1,7 @@
 Module.register("MMM-MySystem", {
 
   defaults: {
-    showHeader: true,         // Show or hide header
+    showHeader: true,
     showCpuUsage: true,
     showCPU: true,
     showMemory: true,
@@ -52,9 +52,9 @@ Module.register("MMM-MySystem", {
       return wrapper;
     }
 
-    // --- Header: two rows ---
+    // --- Header: three rows ---
     if (this.config.showHeader) {
-      // Row 1: Hostname / system name
+      // Row 1: Hostname
       const headerRow1 = document.createElement("div");
       headerRow1.className = "system-header";
       const left1 = document.createElement("div");
@@ -63,23 +63,26 @@ Module.register("MMM-MySystem", {
       headerRow1.appendChild(left1);
       wrapper.appendChild(headerRow1);
 
-      // Row 2: Pi model (left) | OS version (right)
+      // Row 2: Pi model
       const headerRow2 = document.createElement("div");
       headerRow2.className = "system-header";
       const left2 = document.createElement("div");
       left2.className = "system-left";
       left2.innerHTML = this.systemData.model || "Model N/A";
-
-      const right2 = document.createElement("div");
-      right2.className = "system-right";
-      right2.innerHTML = this.config.osVersion || "OS N/A";
-
       headerRow2.appendChild(left2);
-      headerRow2.appendChild(right2);
       wrapper.appendChild(headerRow2);
+
+      // Row 3: OS version
+      const headerRow3 = document.createElement("div");
+      headerRow3.className = "system-header";
+      const left3 = document.createElement("div");
+      left3.className = "system-left";
+      left3.innerHTML = this.systemData.osVersion || "OS N/A";
+      headerRow3.appendChild(left3);
+      wrapper.appendChild(headerRow3);
     }
 
-    // --- System items ---
+    // --- System items (CPU, Memory, Disk, etc.) ---
     const items = [
       { show: this.config.showCpuUsage, key: "cpuUsage", icon: "⚙️", label: "CPU_USAGE" },
       { show: this.config.showCPU, key: "cpuTemp", icon: "🌡️", label: "CPU_TEMP" },
@@ -104,7 +107,6 @@ Module.register("MMM-MySystem", {
       let value = this.systemData[item.key] || "N/A";
       let statusClass = "";
 
-      // --- Status colors ---
       if (item.key === "cpuTemp") {
         const temp = parseFloat(value || 0);
         if (temp >= 80) statusClass = "cpu-hot";
