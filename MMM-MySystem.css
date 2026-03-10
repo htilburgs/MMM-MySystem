@@ -1,6 +1,6 @@
 .mySystem {
   font-size: 16px;
-  line-height: 1.2em; /* tighter line spacing */
+  line-height: 1.2em;
   color: #f0f0f0;
 }
 
@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2px; /* smaller gap between rows */
+  margin-bottom: 2px;
 }
 
 .system-left {
@@ -22,6 +22,23 @@
   text-align: right;
 }
 
+/* CPU Temp colors */
+.cpu-warn { color: orange; }
+.cpu-hot { color: red; }
+
+/* CPU Usage colors */
+.cpuusage-warn { color: yellow; }
+.cpuusage-warn2 { color: orange; }
+.cpuusage-hot { color: red; }
+
+/* Memory colors */
+.mem-warn { color: yellow; }
+.mem-hot { color: red; }
+
+/* Disk colors */
+.disk-warn { color: yellow; }
+.disk-hot { color: red; }
+
 /* Responsive */
 @media (max-width: 400px) {
   .system-row {
@@ -29,42 +46,5 @@
     align-items: flex-start;
     margin-bottom: 2px;
   }
-
-  .system-right {
-    text-align: left;
-  }
-}
-
-/* ---------------- */
-/* Status indicators */
-/* ---------------- */
-
-/* CPU temperature */
-.cpu-warn {
-  color: orange;
-}
-
-.cpu-hot {
-  color: red;
-  font-weight: bold;
-}
-
-/* Memory usage */
-.mem-warn {
-  color: yellow;
-}
-
-.mem-hot {
-  color: red;
-  font-weight: bold;
-}
-
-/* Disk almost full */
-.disk-warn {
-  color: orange;
-}
-
-.disk-hot {
-  color: red;
-  font-weight: bold;
+  .system-right { text-align: left; }
 }
