@@ -1,7 +1,7 @@
 # MMM-MySystem
 
 This is a [Magic Mirror²](https://github.com/MichMich/MagicMirror) module for the system information<br/>
-I now there are more, but I built a version with a modern look and feel.
+I now there are more 😉, but I built a version with a modern look and feel, suited for my needs.
 
 <img width="429" height="171" alt="SCR-20260310-qsds" src="https://github.com/user-attachments/assets/be0620cf-94bf-4887-b7f7-8f05e091c47f" />
 
@@ -54,8 +54,7 @@ Add the module to your modules array in your config.js.
     showIPeth: true,
     showIPwifi: true,
     tempUnit: "C"
-    updateInterval: 10000,
-    customCommands: {}
+    updateInterval: 10000
   }
 }
 ```
