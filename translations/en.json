@@ -1,9 +1,9 @@
 {
   "CPU_USAGE": "CPU Usage",
-  "CPU": "CPU Temp",
-  "Memory": "Free Memory",
+  "CPU_TEMP": "CPU Temp",
+  "Memory": "Memory",
+  "Disk": "Disk",
   "Uptime": "Uptime",
-  "Disk": "Free Disk",
   "ETH": "Ethernet",
   "WIFI": "WiFi",
   "GATHERING_INFO": "Gathering information......."
