@@ -32,7 +32,7 @@ then go to ```~/MagicMirror/css``` and edit the file ```custom.css```
 add 
 ```
 .MMM-MySystem{
-  font-family: “Noto Color Emoji”, sans-serif !important;
+  font-family: “Noto Color Emoji” !important;
 },
 ```
 ## Configuration
