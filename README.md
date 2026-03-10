@@ -28,7 +28,13 @@ Try the next
 sudo apt install fonts-noto-color-emoji
 fc-cache -fv
 ```
-
+then go to ```~/MagicMirror/css``` and edit the file ```custom.css```
+add 
+``
+.MMM-MySystem{
+  font-family: “Noto Color Emoji”, sans-serif !important;
+},
+```
 ## Configuration
 Go to the MagicMirror/config directory and edit the config.js file. <br/>
 Add the module to your modules array in your config.js.
