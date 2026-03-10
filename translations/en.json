@@ -3,8 +3,7 @@
   "Memory": "Free Memory",
   "Uptime": "Uptime",
   "Disk": "Free Disk",
-  "Volume": "Volume",
-  "IP": "IP Address",
   "ETH": "Ethernet",
-  "WIFI": "WiFi"
+  "WIFI": "WiFi",
+  "GATHERING_INFO": "Gathering information......."
 }
