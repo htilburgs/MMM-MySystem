@@ -22,15 +22,15 @@ git pull
 npm install
 ```
 ## Trouble shooting
-Sometimes the emoji are not shown, or shown in black and white.
-Try the next
+Sometimes the emoji are not shown, or shown in black and white instead of color.<br/>
+Try the next:
 ```
 sudo apt install fonts-noto-color-emoji
 fc-cache -fv
 ```
 then go to ```~/MagicMirror/css``` and edit the file ```custom.css```
 add 
-``
+```
 .MMM-MySystem{
   font-family: “Noto Color Emoji”, sans-serif !important;
 },
