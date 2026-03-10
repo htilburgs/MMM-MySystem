@@ -1,7 +1,7 @@
 Module.register("MMM-MySystem", {
 
   defaults: {
-    showHeader: true,        // NEW: show or hide hostname & Pi model
+    showHeader: true,         // Show or hide hostname & Pi model
     showCpuUsage: true,
     showCPU: true,
     showMemory: true,
@@ -13,7 +13,7 @@ Module.register("MMM-MySystem", {
     tempUnit: "C",
     osVersion: "Bookworm",
     updateInterval: 10000,
-    language: "en",      
+    language: "en",
     customCommands: {}
   },
 
@@ -52,18 +52,18 @@ Module.register("MMM-MySystem", {
       return wrapper;
     }
 
-    // --- Header: Hostname & Pi model ---
-    if (this.config.showHeader && (this.systemData.hostname || this.systemData.model)) {
+    // --- Header row (always shown if showHeader = true) ---
+    if (this.config.showHeader) {
       const headerRow = document.createElement("div");
       headerRow.className = "system-header";
 
       const left = document.createElement("div");
       left.className = "system-left";
-      left.innerHTML = this.systemData.hostname || "";
+      left.innerHTML = this.systemData.hostname || "Hostname N/A";
 
       const right = document.createElement("div");
       right.className = "system-right";
-      right.innerHTML = this.systemData.model || "";
+      right.innerHTML = this.systemData.model || "Model N/A";
 
       headerRow.appendChild(left);
       headerRow.appendChild(right);
