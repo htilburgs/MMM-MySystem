@@ -1,9 +1,10 @@
 {
-  "CPU": "CPU Temperatur",
-  "Memory": "Freier Speicher",
+  "CPU_USAGE": "CPU Auslastung",
+  "CPU_TEMP": "CPU Temperatur",
+  "Memory": "Speicher",
+  "Disk": "Festplatte",
   "Uptime": "Betriebszeit",
-  "Disk": "Freier Speicherplatz",
   "ETH": "Ethernet",
-  "WIFI": "WLAN",
+  "WIFI": "WiFi",
   "GATHERING_INFO": "Information wird gesammelt......."
 }
