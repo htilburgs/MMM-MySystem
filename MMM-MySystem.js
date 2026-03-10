@@ -1,6 +1,7 @@
 Module.register("MMM-MySystem", {
 
   defaults: {
+    showHeader: true,        // NEW: show or hide hostname & Pi model
     showCpuUsage: true,
     showCPU: true,
     showMemory: true,
@@ -8,10 +9,11 @@ Module.register("MMM-MySystem", {
     showUptime: true,
     showIPeth: true,
     showIPwifi: true,
+
     tempUnit: "C",
     osVersion: "Bookworm",
     updateInterval: 10000,
-    language: "en",
+    language: "en",      
     customCommands: {}
   },
 
@@ -31,8 +33,6 @@ Module.register("MMM-MySystem", {
   start: function () {
     this.systemData = {};
     this.sendSocketNotification("CONFIG", this.config);
-
-    // Start periodic updates
     setInterval(() => this.sendSocketNotification("UPDATE"), this.config.updateInterval);
   },
 
@@ -52,6 +52,25 @@ Module.register("MMM-MySystem", {
       return wrapper;
     }
 
+    // --- Header: Hostname & Pi model ---
+    if (this.config.showHeader && (this.systemData.hostname || this.systemData.model)) {
+      const headerRow = document.createElement("div");
+      headerRow.className = "system-header";
+
+      const left = document.createElement("div");
+      left.className = "system-left";
+      left.innerHTML = this.systemData.hostname || "";
+
+      const right = document.createElement("div");
+      right.className = "system-right";
+      right.innerHTML = this.systemData.model || "";
+
+      headerRow.appendChild(left);
+      headerRow.appendChild(right);
+      wrapper.appendChild(headerRow);
+    }
+
+    // --- System items ---
     const items = [
       { show: this.config.showCpuUsage, key: "cpuUsage", icon: "⚙️", label: "CPU_USAGE" },
       { show: this.config.showCPU, key: "cpuTemp", icon: "🌡️", label: "CPU_TEMP" },
@@ -76,29 +95,23 @@ Module.register("MMM-MySystem", {
       let value = this.systemData[item.key] || "N/A";
       let statusClass = "";
 
-      // CPU Temp color
+      // --- Status colors ---
       if (item.key === "cpuTemp") {
         const temp = parseFloat(value || 0);
         if (temp >= 80) statusClass = "cpu-hot";
         else if (temp >= 70) statusClass = "cpu-warn";
       }
-
-      // CPU Usage color
       if (item.key === "cpuUsage") {
         const cpu = parseFloat(value || 0);
         if (cpu >= 95) statusClass = "cpuusage-hot";
         else if (cpu >= 85) statusClass = "cpuusage-warn2";
         else if (cpu >= 70) statusClass = "cpuusage-warn";
       }
-
-      // Memory color
       if (item.key === "memory") {
         const mem = parseFloat(value || 0);
         if (mem >= 90) statusClass = "mem-hot";
         else if (mem >= 80) statusClass = "mem-warn";
       }
-
-      // Disk color
       if (item.key === "disk") {
         const match = value.match(/\((\d+)%\)/);
         if (match) {
@@ -116,7 +129,7 @@ Module.register("MMM-MySystem", {
       wrapper.appendChild(row);
     });
 
-    // Ethernet IP
+    // --- IPs ---
     if (this.config.showIPeth && this.systemData.ethIP) {
       const row = document.createElement("div");
       row.className = "system-row";
@@ -125,7 +138,6 @@ Module.register("MMM-MySystem", {
       wrapper.appendChild(row);
     }
 
-    // WiFi IP
     if (this.config.showIPwifi && this.systemData.wifiIP) {
       const row = document.createElement("div");
       row.className = "system-row";
