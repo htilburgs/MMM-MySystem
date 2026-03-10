@@ -1,8 +1,8 @@
 {
   "CPU_USAGE": "CPU Gebruik",
-  "CPU_TEMP": "CPU Temp",
-  "Memory": "Geheugen",
-  "Disk": "Schijf",
+  "CPU_TEMP": "CPU Temperatuur",
+  "Memory": "Vrij Geheugen",
+  "Disk": "Vrije Schijfruimte",
   "Uptime": "Uptime",
   "ETH": "Ethernet",
   "WIFI": "WiFi",
