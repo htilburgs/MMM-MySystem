@@ -22,6 +22,10 @@
   text-align: right;
 }
 
+.system-header-block {
+  margin-bottom: 10px;  /* blank line after header */
+}
+
 .system-header {
   display: flex;
   justify-content: space-between;
@@ -31,6 +35,7 @@
   font-size: 16px;
   color: #ffffff;
 }
+
 .system-header:first-child {
   font-size: 18px; /* slightly larger for hostname */
 }
