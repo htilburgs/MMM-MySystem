@@ -17,10 +17,9 @@ module.exports = NodeHelper.create({
     if (notification === "UPDATE") this.getSystemData();
   },
 
-  // Execute command with optional bash shell
-  execCmd(cmd, useBash = false) {
+  execCmd(cmd) {
     return new Promise(resolve => {
-      exec(cmd, { shell: useBash ? "/bin/bash" : undefined }, (err, stdout) => {
+      exec(cmd, (err, stdout) => {
         if (err) resolve(null);
         else resolve(stdout.trim());
       });
@@ -50,15 +49,15 @@ module.exports = NodeHelper.create({
         data.cpuTemp = temp.toFixed(1) + " °" + (this.config.tempUnit || "C");
       }
 
-      // CPU usage (using awk + process substitution)
-      let cpuUsage = await this.execCmd(`awk '/^%Cpu/{gsub(/,/, ".", $8); print 100 - $8}' <(top -b -n 1)`, true);
-      if (cpuUsage) data.cpuUsage = parseFloat(cpuUsage).toFixed(1) + " %";
+      // CPU usage
+      let cpuUsage = await this.execCmd("top -bn1 | grep 'Cpu(s)' | awk '{print 100-$8}'");
+      if (cpuUsage) data.cpuUsage = parseFloat(cpuUsage).toFixed(1) + "%";
 
       // Memory %
       let memory = await this.execCmd("free | awk '/Mem/ {printf(\"%.0f\", $3/$2*100)}'");
       if (memory) data.memory = memory + "%";
 
-      // Disk free space (size + %)
+      // Disk
       let disk = await this.execCmd("df -h / | awk 'NR==2 {print $4 \" (\" $5 \")\"}'");
       if (disk) data.disk = disk;
 
