@@ -2,8 +2,8 @@ Module.register("MMM-MySystem", {
 
   defaults: {
     showHeader: true,
-    showCpuUsage: true,
-    showCPU: true,
+    showCPUusage: true,
+    showCPUtemp: true, 
     showMemory: true,
     showDisk: true,
     showUptime: true,
@@ -83,7 +83,7 @@ Module.register("MMM-MySystem", {
       headerRow3.appendChild(left3);
       headerBlock.appendChild(headerRow3);
 
-      // Add blank space under header
+      // Blank line after header
       headerBlock.style.marginBottom = "10px";
 
       wrapper.appendChild(headerBlock);
@@ -91,8 +91,8 @@ Module.register("MMM-MySystem", {
 
     // --- System items ---
     const items = [
-      { show: this.config.showCpuUsage, key: "cpuUsage", icon: "⚙️", label: "CPU_USAGE" },
-      { show: this.config.showCPU, key: "cpuTemp", icon: "🌡️", label: "CPU_TEMP" },
+      { show: this.config.showCPUusage, key: "cpuUsage", icon: "⚙️", label: "CPU_USAGE" },
+      { show: this.config.showCPUtemp, key: "cpuTemp", icon: "🌡️", label: "CPU_TEMP" },
       { show: this.config.showMemory, key: "memory", icon: "🧠", label: "Memory" },
       { show: this.config.showDisk, key: "disk", icon: "💽", label: "Disk" },
       { show: this.config.showUptime, key: "uptime", icon: "⏱️", label: "Uptime" }
@@ -114,6 +114,7 @@ Module.register("MMM-MySystem", {
       let value = this.systemData[item.key] || "N/A";
       let statusClass = "";
 
+      // --- Status colors ---
       if (item.key === "cpuTemp") {
         const temp = parseFloat(value || 0);
         if (temp >= 80) statusClass = "cpu-hot";
