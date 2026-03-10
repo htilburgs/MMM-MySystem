@@ -9,9 +9,8 @@ Module.register("MMM-MySystem", {
     showUptime: true,
     showIPeth: true,
     showIPwifi: true,
-
     tempUnit: "C",
-    osVersion: "Bookworm",
+    osVersion: "Trixie",
     updateInterval: 10000,
     language: "en",
     customCommands: {}
@@ -52,8 +51,11 @@ Module.register("MMM-MySystem", {
       return wrapper;
     }
 
-    // --- Header: three rows ---
+    // --- Header block (3 rows) ---
     if (this.config.showHeader) {
+      const headerBlock = document.createElement("div");
+      headerBlock.className = "system-header-block";
+
       // Row 1: Hostname
       const headerRow1 = document.createElement("div");
       headerRow1.className = "system-header";
@@ -61,7 +63,7 @@ Module.register("MMM-MySystem", {
       left1.className = "system-left";
       left1.innerHTML = this.systemData.hostname || "Hostname N/A";
       headerRow1.appendChild(left1);
-      wrapper.appendChild(headerRow1);
+      headerBlock.appendChild(headerRow1);
 
       // Row 2: Pi model
       const headerRow2 = document.createElement("div");
@@ -70,7 +72,7 @@ Module.register("MMM-MySystem", {
       left2.className = "system-left";
       left2.innerHTML = this.systemData.model || "Model N/A";
       headerRow2.appendChild(left2);
-      wrapper.appendChild(headerRow2);
+      headerBlock.appendChild(headerRow2);
 
       // Row 3: OS version
       const headerRow3 = document.createElement("div");
@@ -79,10 +81,15 @@ Module.register("MMM-MySystem", {
       left3.className = "system-left";
       left3.innerHTML = this.systemData.osVersion || "OS N/A";
       headerRow3.appendChild(left3);
-      wrapper.appendChild(headerRow3);
+      headerBlock.appendChild(headerRow3);
+
+      // Add blank space under header
+      headerBlock.style.marginBottom = "10px";
+
+      wrapper.appendChild(headerBlock);
     }
 
-    // --- System items (CPU, Memory, Disk, etc.) ---
+    // --- System items ---
     const items = [
       { show: this.config.showCpuUsage, key: "cpuUsage", icon: "⚙️", label: "CPU_USAGE" },
       { show: this.config.showCPU, key: "cpuTemp", icon: "🌡️", label: "CPU_TEMP" },
