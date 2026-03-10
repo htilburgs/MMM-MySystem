@@ -12,47 +12,44 @@ Module.register("MMM-MySystem", {
     tempUnit: "C",
     osVersion: "Bookworm",
     updateInterval: 10000,
-    language: "en",       // removed config.language reference
+    language: "en",      // optional override of MM language
     customCommands: {}
   },
 
+  getStyles: function() {
+    return ["MMM-MySystem.css"];
+  },
+
+  getTranslations: function() {
+    return {
+      en: "translations/en.json",
+      nl: "translations/nl.json",
+      de: "translations/de.json",
+      fr: "translations/fr.json"
+    };
+    
   start: function () {
     this.systemData = {};
-    this.translations = {};
-    this.fallbackTranslations = {};
-
-    const lang = this.config.language || config.language || "en";
-
-    // Load selected language
-    fetch(this.file("translations/" + lang + ".json"))
-      .then(res => res.json())
-      .then(data => { this.translations = data; this.updateDom(); })
-      .catch(err => console.error("MMM-MySystem translation load error:", err));
-
-    // Load English fallback
-    fetch(this.file("translations/en.json"))
-      .then(res => res.json())
-      .then(data => { this.fallbackTranslations = data; });
-
     this.sendSocketNotification("CONFIG", this.config);
 
+    // Start periodic updates
     setInterval(() => { this.sendSocketNotification("UPDATE"); }, this.config.updateInterval);
   },
 
-  translate: function (key) {
+  translate: function(key) {
+    // MagicMirror automatically loads translations via getTranslations()
     if (this.translations && this.translations[key]) return this.translations[key];
-    if (this.fallbackTranslations && this.fallbackTranslations[key]) return this.fallbackTranslations[key];
-    return key;
+    return key; // fallback to key name if missing
   },
 
-  socketNotificationReceived: function (notification, payload) {
+  socketNotificationReceived: function(notification, payload) {
     if (notification === "SYSTEM_DATA") {
       this.systemData = payload;
       this.updateDom();
     }
   },
 
-  getDom: function () {
+  getDom: function() {
     const wrapper = document.createElement("div");
     wrapper.className = "mySystem";
 
@@ -125,7 +122,7 @@ Module.register("MMM-MySystem", {
       wrapper.appendChild(row);
     });
 
-    // Ethernet
+    // Ethernet IP
     if (this.config.showIPeth && this.systemData.ethIP) {
       const row = document.createElement("div");
       row.className = "system-row";
@@ -134,7 +131,7 @@ Module.register("MMM-MySystem", {
       wrapper.appendChild(row);
     }
 
-    // WiFi
+    // WiFi IP
     if (this.config.showIPwifi && this.systemData.wifiIP) {
       const row = document.createElement("div");
       row.className = "system-row";
@@ -145,18 +142,6 @@ Module.register("MMM-MySystem", {
 
     return wrapper;
   },
-
-  getStyles: function () {
-    return ["MMM-MySystem.css"];
-  },
-
-  getTranslations: function () {
-    return {
-      en: "translations/en.json",
-      nl: "translations/nl.json",
-      de: "translations/de.json",
-      fr: "translations/fr.json"
-    };
   }
 
 });
