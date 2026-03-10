@@ -4,8 +4,9 @@ Module.register("MMM-MySystem", {
     showMemory: true,
     showUptime: true,
     showDisk: true,
-    showIP: true,
-    osVersion: null, // auto-detect
+    showIPeth: true,   // show Ethernet IP
+    showIPwifi: true,  // show WiFi IP
+    osVersion: null,   // auto-detect
     tempUnit: "C",
     customCommands: {},
     updateInterval: 10000,
@@ -106,35 +107,37 @@ Module.register("MMM-MySystem", {
       }
     });
 
-    // ETH/WiFi IP
-    if (this.config.showIP) {
-      if (this.systemData.ethIP) {
-        const ethRow = document.createElement("div");
-        ethRow.className = "system-row";
-        const left = document.createElement("div");
-        left.className = "system-left";
-        left.innerHTML = `🌐 ${this.translate("ETH")}`;
-        const right = document.createElement("div");
-        right.className = "system-right";
-        right.innerHTML = this.systemData.ethIP;
-        ethRow.appendChild(left);
-        ethRow.appendChild(right);
-        wrapper.appendChild(ethRow);
-      }
+    // --------------------------
+    // IP Addresses (selectable)
+    // --------------------------
+    // Ethernet
+    if (this.config.showIPeth && this.systemData.ethIP) {
+      const ethRow = document.createElement("div");
+      ethRow.className = "system-row";
+      const left = document.createElement("div");
+      left.className = "system-left";
+      left.innerHTML = `🌐 ${this.translate("ETH")}`;
+      const right = document.createElement("div");
+      right.className = "system-right";
+      right.innerHTML = this.systemData.ethIP;
+      ethRow.appendChild(left);
+      ethRow.appendChild(right);
+      wrapper.appendChild(ethRow);
+    }
 
-      if (this.systemData.wifiIP) {
-        const wifiRow = document.createElement("div");
-        wifiRow.className = "system-row";
-        const left = document.createElement("div");
-        left.className = "system-left";
-        left.innerHTML = `📶 ${this.translate("WIFI")}`;
-        const right = document.createElement("div");
-        right.className = "system-right";
-        right.innerHTML = this.systemData.wifiIP;
-        wifiRow.appendChild(left);
-        wifiRow.appendChild(right);
-        wrapper.appendChild(wifiRow);
-      }
+    // WiFi
+    if (this.config.showIPwifi && this.systemData.wifiIP) {
+      const wifiRow = document.createElement("div");
+      wifiRow.className = "system-row";
+      const left = document.createElement("div");
+      left.className = "system-left";
+      left.innerHTML = `📶 ${this.translate("WIFI")}`;
+      const right = document.createElement("div");
+      right.className = "system-right";
+      right.innerHTML = this.systemData.wifiIP;
+      wifiRow.appendChild(left);
+      wifiRow.appendChild(right);
+      wrapper.appendChild(wifiRow);
     }
 
     return wrapper;
