@@ -36,9 +36,8 @@ Add the module to your modules array in your config.js.
     showCpuUsage: true,
     showCpuTemp: true,
     showMemory: true,
-    showUptime: true,
     showDisk: true,
-    showVolume: true,
+    showUptime: true,
     showIPeth: true,
     showIPwifi: true,
     tempUnit: "C"
@@ -52,7 +51,12 @@ Add the module to your modules array in your config.js.
 
 | Option                | Description
 |:----------------------|:-------------
-|`showHeader`           | Show the header with Hostname, Model and OS Version
-|`showCPUusage`         | Show the CPU Usage (%)
-|`showCPUtemp`          | Show the CPU Temperature 
-|
+|`showHeader`           | Show the header with Hostname, Model and OS Version<br/>Options: `true`/`false` - Default: <b>`true`</b>
+|`showCPUusage`         | Show the CPU Usage (%)<br/>Options: `true`/`false` - Default: <b>`true`</b>
+|`showCPUtemp`          | Show the CPU Temperature <br/>Options: `true`/`false` - Default: <b>`true`</b>
+|`showMemory`           | Show the Free Memory (%)<br/>Options: `true`/`false` - Default: <b>`true`</b>
+|`showDisk`             | Show the Free Diskpace<br/>Options: `true`/`false` - Default: <b>`true`</b> 
+|`showIPeth`            | Show the IP Address for the Ethernet<br/>Options: `true`/`false` - Default: <b>`true`</b>
+|`showIPwifi            | Show the IP Address for the Wifi<br/>Options: `true`/`false` - Default: <b>`true`</b>
+|`tempUnit`             | Show the temperature in ˚C or ˚F<br/>Options: `C`/`F` - Default: <b>`C`</b>
+|`updateInterval`       | Update interval module in ms<br/>Default: <b>`10000`</b> (10 seconds)
