@@ -23,14 +23,18 @@ npm install
   module: "MMM-MySystem",
   position: "top_right",
   config: {
+    showCpuUsage: true,
     showCPU: true,
     showMemory: true,
     showUptime: true,
     showDisk: true,
     showVolume: true,
-    showIP: true,
-    osVersion: "Trixie",
+    showIPeth: true,
+    showIPwifi: true,
     tempUnit: "C"
+    updateInterval: 10000,
+    language: "en",
+    customCommands: {}
   }
 }
 ```
