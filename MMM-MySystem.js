@@ -4,9 +4,9 @@ Module.register("MMM-MySystem", {
     showMemory: true,
     showUptime: true,
     showDisk: true,
-    showIPeth: true,   // show Ethernet IP
-    showIPwifi: true,  // show WiFi IP
-    osVersion: null,   // auto-detect
+    showIPeth: true,
+    showIPwifi: true,
+    osVersion: null,
     tempUnit: "C",
     customCommands: {},
     updateInterval: 10000,
@@ -19,19 +19,14 @@ Module.register("MMM-MySystem", {
     this.sendSocketNotification("CONFIG", this.config);
     this.loadTranslations(this.config.language);
 
-    setInterval(() => {
-      this.sendSocketNotification("UPDATE");
-    }, this.config.updateInterval);
+    setInterval(() => this.sendSocketNotification("UPDATE"), this.config.updateInterval);
   },
 
   loadTranslations: function(lang) {
     const self = this;
     fetch(`${this.file("/translations/")}${lang}.json`)
       .then(resp => resp.json())
-      .then(json => {
-        self.translations = json;
-        self.updateDom();
-      })
+      .then(json => { self.translations = json; self.updateDom(); })
       .catch(err => console.error("MMM-MySystem translation load error:", err));
   },
 
@@ -67,30 +62,26 @@ Module.register("MMM-MySystem", {
         left.innerHTML = `${item.icon} ${this.translate(item.label)}`;
 
         const right = document.createElement("div");
-
-        // --------------------------
-        // Status color indicators
-        // --------------------------
         let value = this.systemData[item.key];
         let statusClass = "";
 
-        // CPU thresholds (°C)
+        // CPU thresholds
         if (item.key === "cpu") {
           const temp = parseFloat(value);
           if (temp >= 80) statusClass = "cpu-hot";
           else if (temp >= 70) statusClass = "cpu-warn";
         }
 
-        // Memory thresholds (%)
+        // Memory thresholds
         if (item.key === "memory") {
           const mem = parseFloat(value);
           if (mem >= 90) statusClass = "mem-hot";
           else if (mem >= 80) statusClass = "mem-warn";
         }
 
-        // Disk thresholds (%)
+        // Disk thresholds
         if (item.key === "disk") {
-          const match = value.match(/\((\d+)%\)/); // e.g., "120G (45%)"
+          const match = value.match(/\((\d+)%\)/);
           if (match) {
             const diskPct = parseInt(match[1]);
             if (diskPct >= 95) statusClass = "disk-hot";
@@ -107,11 +98,8 @@ Module.register("MMM-MySystem", {
       }
     });
 
-    // --------------------------
-    // IP Addresses (selectable)
-    // --------------------------
     // Ethernet
-    if (this.config.showIPeth && this.systemData.ethIP) {
+    if (this.config.showIPeth && this.systemData.ethIP && this.systemData.ethIP !== "N/A") {
       const ethRow = document.createElement("div");
       ethRow.className = "system-row";
       const left = document.createElement("div");
@@ -126,7 +114,7 @@ Module.register("MMM-MySystem", {
     }
 
     // WiFi
-    if (this.config.showIPwifi && this.systemData.wifiIP) {
+    if (this.config.showIPwifi && this.systemData.wifiIP && this.systemData.wifiIP !== "N/A") {
       const wifiRow = document.createElement("div");
       wifiRow.className = "system-row";
       const left = document.createElement("div");
