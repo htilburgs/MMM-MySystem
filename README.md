@@ -23,6 +23,7 @@ npm install
   module: "MMM-MySystem",
   position: "top_right",
   config: {
+    showHeader: true,
     showCpuUsage: true,
     showCPU: true,
     showMemory: true,
