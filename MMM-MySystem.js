@@ -4,7 +4,6 @@ Module.register("MMM-MySystem", {
     showMemory: true,
     showUptime: true,
     showDisk: true,
-    showVolume: true,
     showIP: true,
     osVersion: null, // auto-detect
     tempUnit: "C",
@@ -67,8 +66,39 @@ Module.register("MMM-MySystem", {
         left.innerHTML = `${item.icon} ${this.translate(item.label)}`;
 
         const right = document.createElement("div");
-        right.className = "system-right";
-        right.innerHTML = this.systemData[item.key];
+
+        // --------------------------
+        // Status color indicators
+        // --------------------------
+        let value = this.systemData[item.key];
+        let statusClass = "";
+
+        // CPU thresholds (°C)
+        if (item.key === "cpu") {
+          const temp = parseFloat(value);
+          if (temp >= 80) statusClass = "cpu-hot";
+          else if (temp >= 70) statusClass = "cpu-warn";
+        }
+
+        // Memory thresholds (%)
+        if (item.key === "memory") {
+          const mem = parseFloat(value);
+          if (mem >= 90) statusClass = "mem-hot";
+          else if (mem >= 80) statusClass = "mem-warn";
+        }
+
+        // Disk thresholds (%)
+        if (item.key === "disk") {
+          const match = value.match(/\((\d+)%\)/); // e.g., "120G (45%)"
+          if (match) {
+            const diskPct = parseInt(match[1]);
+            if (diskPct >= 95) statusClass = "disk-hot";
+            else if (diskPct >= 85) statusClass = "disk-warn";
+          }
+        }
+
+        right.className = "system-right " + statusClass;
+        right.innerHTML = value;
 
         row.appendChild(left);
         row.appendChild(right);
