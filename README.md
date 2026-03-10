@@ -25,6 +25,8 @@ npm install
 {
   module: "MMM-MySystem",
   position: "top_right",
+  header: "System Information",
+  disabled: false,
   config: {
     showHeader: true,
     showCpuUsage: true,
@@ -41,3 +43,4 @@ npm install
   }
 }
 ```
+
