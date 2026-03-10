@@ -116,21 +116,34 @@ Module.register("MMM-MySystem", {
 
       // --- Status colors ---
       if (item.key === "cpuTemp") {
-        const temp = parseFloat(value || 0);
-        if (temp >= 80) statusClass = "cpu-hot";
-        else if (temp >= 70) statusClass = "cpu-warn";
+        // Parse numeric value
+        let tempValue = parseFloat(value) || 0;
+
+        // Set thresholds depending on unit
+        let hotThreshold = 80; // °C
+        let warnThreshold = 70; // °C
+        if (this.config.tempUnit === "F") {
+          hotThreshold = 176; // 80°C
+          warnThreshold = 158; // 70°C
+        }
+
+        if (tempValue >= hotThreshold) statusClass = "cpu-hot";
+        else if (tempValue >= warnThreshold) statusClass = "cpu-warn";
       }
+
       if (item.key === "cpuUsage") {
         const cpu = parseFloat(value || 0);
         if (cpu >= 95) statusClass = "cpuusage-hot";
         else if (cpu >= 85) statusClass = "cpuusage-warn2";
         else if (cpu >= 70) statusClass = "cpuusage-warn";
       }
+
       if (item.key === "memory") {
         const mem = parseFloat(value || 0);
         if (mem >= 90) statusClass = "mem-hot";
         else if (mem >= 80) statusClass = "mem-warn";
       }
+
       if (item.key === "disk") {
         const match = value.match(/\((\d+)%\)/);
         if (match) {
