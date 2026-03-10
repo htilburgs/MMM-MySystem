@@ -1,6 +1,6 @@
 .mySystem {
   font-size: 16px;
-  line-height: 1.5em;
+  line-height: 1.2em; /* tighter line spacing */
   color: #f0f0f0;
 }
 
@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 2px; /* smaller gap between rows */
 }
 
 .system-left {
@@ -22,12 +22,14 @@
   text-align: right;
 }
 
-/* Responsive: stack columns on small screens */
+/* Responsive */
 @media (max-width: 400px) {
   .system-row {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 2px;
   }
+
   .system-right {
     text-align: left;
   }
