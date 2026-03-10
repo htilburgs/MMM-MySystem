@@ -1,33 +1,29 @@
 .mySystem {
   font-size: 16px;
-  line-height: 1.2em; /* tighter line spacing */
+  line-height: 1.2em;
   color: #f0f0f0;
 }
 
 .system-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 90px; /* fixed value column */
   align-items: center;
-  margin-bottom: 2px; /* smaller gap between rows */
+  margin-bottom: 2px;
 }
 
 .system-left {
-  flex: 1;
   text-align: left;
   font-weight: bold;
 }
 
 .system-right {
-  flex: 1;
   text-align: right;
 }
 
-/* Responsive */
+/* Compact layout on small screens */
 @media (max-width: 400px) {
   .system-row {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 2px;
+    grid-template-columns: auto;
   }
 
   .system-right {
