@@ -3,8 +3,7 @@
   "Memory": "Vrij Geheugen",
   "Uptime": "Uptime",
   "Disk": "Vrije Schijfruimte",
-  "Volume": "Volume",
-  "IP": "IP Adres",
   "ETH": "Ethernet",
-  "WIFI": "WiFi"
+  "WIFI": "WiFi",
+  "GATHERING_INFO": "Informatie verzamelen......."
 }
