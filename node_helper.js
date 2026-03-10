@@ -31,9 +31,15 @@ module.exports = NodeHelper.create({
     const data = {};
 
     try {
-      // Hostname and Pi model, with fallback
+      // Hostname
       data.hostname = await this.execCmd("hostname") || "Hostname N/A";
+
+      // Pi Model
       data.model = await this.execCmd("cat /proc/device-tree/model") || "Model N/A";
+
+      // OS Version
+      let osVersion = await this.execCmd(`grep PRETTY_NAME /etc/os-release | cut -d '=' -f2 | tr -d '"'`);
+      data.osVersion = osVersion || "OS N/A";
 
       // CPU temp
       let cpuTemp = await this.execCmd("cat /sys/class/thermal/thermal_zone0/temp");
