@@ -62,7 +62,7 @@ module.exports = NodeHelper.create({
       commands.push(execCmd(uptimeCmd).then(res => { if (res) data.uptime = res; }));
     }
 
-    // Disk – only free space of root partition
+    // Disk – root partition only
     if (this.config.showDisk) {
       let diskCmd = "df -h / | awk 'NR==2 {print $4 \" (\" $5 \")\"}'";
       diskCmd = cmd("disk", diskCmd);
@@ -73,24 +73,19 @@ module.exports = NodeHelper.create({
     }
 
     // IP Address (ETH/WiFi)
-    if (this.config.showIP) {
-      const getIP = iface => `ip -4 addr show ${iface} 2>/dev/null | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' || echo ""`;
-      const ethCmd = cmd("ip_eth", getIP("eth0"));
-      const wifiCmd = cmd("ip_wifi", getIP("wlan0"));
+    const getIP = iface => `ip -4 addr show ${iface} 2>/dev/null | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' || echo ""`;
 
-      commands.push(execCmd(ethCmd).then(res => { data.ethIP = res ? res.trim() : "N/A"; }));
-      commands.push(execCmd(wifiCmd).then(res => { data.wifiIP = res ? res.trim() : "N/A"; }));
+    if (this.config.showIPeth !== false) {
+      let ethCmd = cmd("ip_eth", getIP("eth0"));
+      commands.push(execCmd(ethCmd).then(res => { data.ethIP = res && res.trim() ? res.trim() : "N/A"; }));
     }
 
-    // Execute all commands in parallel
-    Promise.all(commands).then(() => {
-      if (this.config.showIP) {
-        let ipStr = "";
-        if (data.ethIP) ipStr += `ETH: ${data.ethIP} `;
-        if (data.wifiIP) ipStr += `WIFI: ${data.wifiIP}`;
-        data.ip = ipStr.trim();
-      }
-      self.sendSocketNotification("SYSTEM_DATA", data);
-    });
+    if (this.config.showIPwifi !== false) {
+      let wifiCmd = cmd("ip_wifi", getIP("wlan0"));
+      commands.push(execCmd(wifiCmd).then(res => { data.wifiIP = res && res.trim() ? res.trim() : "N/A"; }));
+    }
+
+    // Execute all commands
+    Promise.all(commands).then(() => self.sendSocketNotification("SYSTEM_DATA", data));
   }
 });
