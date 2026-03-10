@@ -1,7 +1,7 @@
 Module.register("MMM-MySystem", {
 
   defaults: {
-    showHeader: true,         // Show or hide hostname & Pi model
+    showHeader: true,         // Show or hide header
     showCpuUsage: true,
     showCPU: true,
     showMemory: true,
@@ -52,22 +52,31 @@ Module.register("MMM-MySystem", {
       return wrapper;
     }
 
-    // --- Header row (always shown if showHeader = true) ---
+    // --- Header: two rows ---
     if (this.config.showHeader) {
-      const headerRow = document.createElement("div");
-      headerRow.className = "system-header";
+      // Row 1: Hostname / system name
+      const headerRow1 = document.createElement("div");
+      headerRow1.className = "system-header";
+      const left1 = document.createElement("div");
+      left1.className = "system-left";
+      left1.innerHTML = this.systemData.hostname || "Hostname N/A";
+      headerRow1.appendChild(left1);
+      wrapper.appendChild(headerRow1);
 
-      const left = document.createElement("div");
-      left.className = "system-left";
-      left.innerHTML = this.systemData.hostname || "Hostname N/A";
+      // Row 2: Pi model (left) | OS version (right)
+      const headerRow2 = document.createElement("div");
+      headerRow2.className = "system-header";
+      const left2 = document.createElement("div");
+      left2.className = "system-left";
+      left2.innerHTML = this.systemData.model || "Model N/A";
 
-      const right = document.createElement("div");
-      right.className = "system-right";
-      right.innerHTML = this.systemData.model || "Model N/A";
+      const right2 = document.createElement("div");
+      right2.className = "system-right";
+      right2.innerHTML = this.config.osVersion || "OS N/A";
 
-      headerRow.appendChild(left);
-      headerRow.appendChild(right);
-      wrapper.appendChild(headerRow);
+      headerRow2.appendChild(left2);
+      headerRow2.appendChild(right2);
+      wrapper.appendChild(headerRow2);
     }
 
     // --- System items ---
