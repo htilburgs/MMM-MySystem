@@ -1,13 +1,14 @@
 .mySystem {
   font-size: 16px;
-  line-height: 1.2em;
+  line-height: 1.2em; /* tighter line spacing */
   color: #f0f0f0;
 }
 
 .system-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 2px;
+  margin-bottom: 2px; /* smaller gap between rows */
 }
 
 .system-left {
@@ -17,19 +18,53 @@
 }
 
 .system-right {
-  width: 90px;      /* fixed value column */
+  flex: 1;
   text-align: right;
 }
 
-/* Responsive layout */
+/* Responsive */
 @media (max-width: 400px) {
   .system-row {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 2px;
   }
 
   .system-right {
-    width: auto;
     text-align: left;
   }
+}
+
+/* ---------------- */
+/* Status indicators */
+/* ---------------- */
+
+/* CPU temperature */
+.cpu-warn {
+  color: orange;
+}
+
+.cpu-hot {
+  color: red;
+  font-weight: bold;
+}
+
+/* Memory usage */
+.mem-warn {
+  color: yellow;
+}
+
+.mem-hot {
+  color: red;
+  font-weight: bold;
+}
+
+/* Disk almost full */
+.disk-warn {
+  color: orange;
+}
+
+.disk-hot {
+  color: red;
+  font-weight: bold;
 }
