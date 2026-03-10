@@ -21,20 +21,7 @@ cd ~/MagicMirror/modules/MMM-MySystem
 git pull
 npm install
 ```
-## Trouble shooting
-Sometimes the emoji are not shown, or shown in black and white instead of color.<br/>
-Try the next:
-```
-sudo apt install fonts-noto-color-emoji
-fc-cache -fv
-```
-then go to ```~/MagicMirror/css``` and edit the file ```custom.css```
-add 
-```
-.MMM-MySystem{
-  font-family: “Noto Color Emoji” !important;
-},
-```
+
 ## Configuration
 Go to the MagicMirror/config directory and edit the config.js file. <br/>
 Add the module to your modules array in your config.js.
