@@ -46,7 +46,7 @@ module.exports = NodeHelper.create({
       if (cpuTemp) {
         let temp = parseFloat(cpuTemp) / 1000;
         if (this.config.tempUnit === "F") temp = temp * 9/5 + 32;
-        data.cpuTemp = temp.toFixed(1) + "°" + (this.config.tempUnit || "C");
+        data.cpuTemp = temp.toFixed(1) + " °" + (this.config.tempUnit || "C");
       }
 
       // CPU usage
