@@ -1,62 +1,162 @@
-const NodeHelper = require("node_helper");
-const { exec } = require("child_process");
+Module.register("MMM-MySystem", {
 
-module.exports = NodeHelper.create({
+  defaults: {
+    showCpuUsage: true,
+    showCPU: true,
+    showMemory: true,
+    showDisk: true,
+    showUptime: true,
+    showIPeth: true,
+    showIPwifi: true,
+
+    tempUnit: "C",
+    osVersion: "Bookworm",
+    updateInterval: 10000,
+    language: "en",       // removed config.language reference
+    customCommands: {}
+  },
 
   start: function () {
-    console.log("MMM-MySystem helper started");
+    this.systemData = {};
+    this.translations = {};
+    this.fallbackTranslations = {};
+
+    const lang = this.config.language || config.language || "en";
+
+    // Load selected language
+    fetch(this.file("translations/" + lang + ".json"))
+      .then(res => res.json())
+      .then(data => { this.translations = data; this.updateDom(); })
+      .catch(err => console.error("MMM-MySystem translation load error:", err));
+
+    // Load English fallback
+    fetch(this.file("translations/en.json"))
+      .then(res => res.json())
+      .then(data => { this.fallbackTranslations = data; });
+
+    this.sendSocketNotification("CONFIG", this.config);
+
+    setInterval(() => { this.sendSocketNotification("UPDATE"); }, this.config.updateInterval);
   },
 
-  socketNotificationReceived: function (notification, config) {
-    if (notification === "CONFIG") this.config = config;
-    if (notification === "UPDATE") this.getSystemData();
+  translate: function (key) {
+    if (this.translations && this.translations[key]) return this.translations[key];
+    if (this.fallbackTranslations && this.fallbackTranslations[key]) return this.fallbackTranslations[key];
+    return key;
   },
 
-  execCmd(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout) => {
-        if (error) resolve(null);
-        else resolve(stdout.trim());
-      });
-    });
+  socketNotificationReceived: function (notification, payload) {
+    if (notification === "SYSTEM_DATA") {
+      this.systemData = payload;
+      this.updateDom();
+    }
   },
 
-  async getSystemData() {
-    const data = {};
+  getDom: function () {
+    const wrapper = document.createElement("div");
+    wrapper.className = "mySystem";
 
-    // CPU Temp
-    let cpuTemp = await this.execCmd("cat /sys/class/thermal/thermal_zone0/temp");
-    if (cpuTemp) {
-      let temp = parseFloat(cpuTemp) / 1000;
-      if (this.config.tempUnit === "F") temp = temp * 9 / 5 + 32;
-      data.cpuTemp = temp.toFixed(1) + "°" + this.config.tempUnit;
+    if (!this.systemData || Object.keys(this.systemData).length === 0) {
+      wrapper.innerHTML = this.translate("GATHERING_INFO");
+      return wrapper;
     }
 
-    // CPU Usage
-    let cpuUsage = await this.execCmd("top -bn1 | grep 'Cpu(s)' | awk '{print 100-$8}'");
-    if (cpuUsage) data.cpuUsage = parseFloat(cpuUsage).toFixed(1) + "%";
+    const items = [
+      { show: this.config.showCpuUsage, key: "cpuUsage", icon: "⚙️", label: "CPU_USAGE" },
+      { show: this.config.showCPU, key: "cpuTemp", icon: "🌡️", label: "CPU_TEMP" },
+      { show: this.config.showMemory, key: "memory", icon: "🧠", label: "Memory" },
+      { show: this.config.showDisk, key: "disk", icon: "💽", label: "Disk" },
+      { show: this.config.showUptime, key: "uptime", icon: "⏱️", label: "Uptime" }
+    ];
 
-    // Memory %
-    let memory = await this.execCmd("free | awk '/Mem/ {printf(\"%.0f\", $3/$2*100)}'");
-    if (memory) data.memory = memory + "%";
+    items.forEach(item => {
+      if (!item.show || !this.systemData[item.key]) return;
 
-    // Disk
-    let disk = await this.execCmd("df -h / | awk 'NR==2 {print $4 \" (\" $5 \")\"}'");
-    if (disk) data.disk = disk;
+      const row = document.createElement("div");
+      row.className = "system-row";
 
-    // Uptime
-    let uptime = await this.execCmd("uptime -p");
-    if (uptime) data.uptime = uptime;
+      const left = document.createElement("div");
+      left.className = "system-left";
+      left.innerHTML = `${item.icon} ${this.translate(item.label)}`;
 
-    // IP ETH
-    let eth = await this.execCmd("hostname -I | awk '{print $1}'");
-    if (eth) data.ethIP = eth;
+      const right = document.createElement("div");
+      right.className = "system-right";
 
-    // IP WiFi
-    let wifi = await this.execCmd("ip -4 addr show wlan0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'");
-    if (wifi) data.wifiIP = wifi;
+      let value = this.systemData[item.key] || "N/A";
+      let statusClass = "";
 
-    this.sendSocketNotification("SYSTEM_DATA", data);
+      // CPU Temp color
+      if (item.key === "cpuTemp") {
+        const temp = parseFloat(value || 0);
+        if (temp >= 80) statusClass = "cpu-hot";
+        else if (temp >= 70) statusClass = "cpu-warn";
+      }
+
+      // CPU Usage color
+      if (item.key === "cpuUsage") {
+        const cpu = parseFloat(value || 0);
+        if (cpu >= 95) statusClass = "cpuusage-hot";
+        else if (cpu >= 85) statusClass = "cpuusage-warn2";
+        else if (cpu >= 70) statusClass = "cpuusage-warn";
+      }
+
+      // Memory color
+      if (item.key === "memory") {
+        const mem = parseFloat(value || 0);
+        if (mem >= 90) statusClass = "mem-hot";
+        else if (mem >= 80) statusClass = "mem-warn";
+      }
+
+      // Disk color
+      if (item.key === "disk") {
+        const match = value.match(/\((\d+)%\)/);
+        if (match) {
+          const diskPct = parseInt(match[1]);
+          if (diskPct >= 95) statusClass = "disk-hot";
+          else if (diskPct >= 85) statusClass = "disk-warn";
+        }
+      }
+
+      right.className += " " + statusClass;
+      right.innerHTML = value;
+
+      row.appendChild(left);
+      row.appendChild(right);
+      wrapper.appendChild(row);
+    });
+
+    // Ethernet
+    if (this.config.showIPeth && this.systemData.ethIP) {
+      const row = document.createElement("div");
+      row.className = "system-row";
+      row.innerHTML = `<div class="system-left">🌐 ${this.translate("ETH")}</div>
+                       <div class="system-right">${this.systemData.ethIP}</div>`;
+      wrapper.appendChild(row);
+    }
+
+    // WiFi
+    if (this.config.showIPwifi && this.systemData.wifiIP) {
+      const row = document.createElement("div");
+      row.className = "system-row";
+      row.innerHTML = `<div class="system-left">📶 ${this.translate("WIFI")}</div>
+                       <div class="system-right">${this.systemData.wifiIP}</div>`;
+      wrapper.appendChild(row);
+    }
+
+    return wrapper;
+  },
+
+  getStyles: function () {
+    return ["MMM-MySystem.css"];
+  },
+
+  getTranslations: function () {
+    return {
+      en: "translations/en.json",
+      nl: "translations/nl.json",
+      de: "translations/de.json",
+      fr: "translations/fr.json"
+    };
   }
 
 });
