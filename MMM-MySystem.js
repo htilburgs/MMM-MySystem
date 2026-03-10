@@ -12,7 +12,7 @@ Module.register("MMM-MySystem", {
     tempUnit: "C",
     osVersion: "Bookworm",
     updateInterval: 10000,
-    language: "en",      // optional override of MM language
+    language: "en",
     customCommands: {}
   },
 
@@ -34,13 +34,7 @@ Module.register("MMM-MySystem", {
     this.sendSocketNotification("CONFIG", this.config);
 
     // Start periodic updates
-    setInterval(() => { this.sendSocketNotification("UPDATE"); }, this.config.updateInterval);
-  },
-
-  translate: function(key) {
-    // MagicMirror automatically loads translations via getTranslations()
-    if (this.translations && this.translations[key]) return this.translations[key];
-    return key; // fallback to key name if missing
+    setInterval(() => this.sendSocketNotification("UPDATE"), this.config.updateInterval);
   },
 
   socketNotificationReceived: function(notification, payload) {
