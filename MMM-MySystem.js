@@ -45,6 +45,13 @@ Module.register("MMM-MySystem", {
     const wrapper = document.createElement("div");
     wrapper.className = "mySystem";
 
+    // Placeholder while no data
+    if (!this.systemData || Object.keys(this.systemData).length === 0) {
+      wrapper.innerHTML = this.translate("GATHERING_INFO") || "Gathering information.......";
+      return wrapper;
+    }
+
+    // Main system items
     const items = [
       { show: this.config.showCPU, key: "cpu", icon: "💻", label: "CPU" },
       { show: this.config.showMemory, key: "memory", icon: "🧠", label: "Memory" },
