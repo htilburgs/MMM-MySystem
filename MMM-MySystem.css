@@ -5,28 +5,31 @@
 }
 
 .system-row {
-  display: grid;
-  grid-template-columns: auto 90px; /* fixed value column */
+  display: flex;
   align-items: center;
   margin-bottom: 2px;
 }
 
 .system-left {
+  flex: 1;
   text-align: left;
   font-weight: bold;
 }
 
 .system-right {
+  width: 90px;      /* fixed value column */
   text-align: right;
 }
 
-/* Compact layout on small screens */
+/* Responsive layout */
 @media (max-width: 400px) {
   .system-row {
-    grid-template-columns: auto;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .system-right {
+    width: auto;
     text-align: left;
   }
 }
