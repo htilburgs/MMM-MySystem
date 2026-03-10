@@ -8,7 +8,6 @@ Module.register("MMM-MySystem", {
     showUptime: true,
     showIPeth: true,
     showIPwifi: true,
-
     tempUnit: "C",
     osVersion: "Bookworm",
     updateInterval: 10000,
