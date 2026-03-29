@@ -60,9 +60,6 @@ Add the module to your modules array in your config.js.
 |`tempUnit`             | Show the temperature in ˚C or ˚F<br/>Options: `C`/`F` - Default: <b>`C`</b>
 |`updateInterval`       | Update interval module in ms<br/>Default: <b>`10000`</b> (10 seconds)
 
-## Versions
-#### v1.0.0 (10-03-2026): Initial version)
-
 ## License
 ### The MIT License (MIT)
 
@@ -74,3 +71,8 @@ The above copyright notice and this permission notice shall be included in all c
 
 The software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
 
+## Versions
+#### v1.0.1 (28-03-2026)
+* Update CSS to better fit UpTime
+  
+#### v1.0.0 (10-03-2026): Initial version)
